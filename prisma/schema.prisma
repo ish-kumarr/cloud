@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  email      String   @unique
+  password   String
+  space_used Int      @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model PasswordReset {
+  id         Int      @id @default(autoincrement())
+  email      String
+  otp        String
+  expiry     DateTime
+  used       Boolean  @default(false)
+  created_at DateTime @default(now())
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  email     String
+  token     String   @unique
+  action    String
+  used      Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model File {
+  id              Int      @id @default(autoincrement())
+  user_id         Int
+  filename        String
+  filepath        String
+  filesize        Int
+  is_folder       Boolean  @default(false)
+  parent_folder_id Int?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+}
+
+model FileShare {
+  id                 Int      @id @default(autoincrement())
+  file_id            Int
+  shared_by_user_id  Int
+  shared_with_user_id Int
+  permission         String
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+}
+
